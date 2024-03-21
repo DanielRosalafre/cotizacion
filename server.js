@@ -1,16 +1,3 @@
-{
-  "name": "dos-ingenierias-proyecto",
-  "version": "1.0.0",
-  "description": "crea tablas",
-  "main": "server.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
-  },
-  "author": "k_ramirez",
-  "license": "ISC"
-}
-
 
 const express = require('express');
 const path = require('path');
