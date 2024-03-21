@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cotización de Columnas</title>
+    <link rel="stylesheet" href="formato_columna.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+</head>
+<body>
+    <nav class="navbar">
+        <ul>
+            <li><a href="inicio.html" class="home-icon"><i class="fas fa-home"></i></a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        <h1>Cotización</h1>
+        <div class="input-group">
+            <label for="material">Material:</label>
+            <select id="material">
+                <option value="Cimientos">Cimientos</option>
+                <option value="Columnas">Columnas</option>
+            </select>
+        </div>
+        <form id="cotizacionForm">
+            <div class="input-group">
+                <label for="cantidad">Cantidad:</label>
+                <input type="number" id="cantidad" required>
+            </div>
+            <div class="input-group">
+                <label for="dimensionx">Base:</label>
+                <input type="number" id="dimensionx" required>
+            </div>
+            <div class="input-group">
+                <label for="dimensiony">Ancho:</label>
+                <input type="number" id="dimensiony" required>
+            </div>
+            <div class="input-group">
+                <label for="dimensionz">Altura:</label>
+                <input type="number" id="dimensionz" required>
+            </div>
+            <button id="calcular">Calcular</button>
+            <button id="descargarCotizacion">Descargar Cotización</button>
+        </form>
+        <table id="cotizacionTable">
+            <thead>
+                <tr>
+                    <th>Cantidad</th>
+                    <th>Base</th>
+                    <th>Ancho</th>
+                    <th>Altura</th>
+                    <th>Material</th>
+                    <th>Dimensión Total</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Aquí se insertarán las filas dinámicamente -->
+            </tbody>
+        </table>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.4.1/jspdf.debug.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="columna.js"></script>
+</body>
+</html>
