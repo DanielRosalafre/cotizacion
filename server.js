@@ -1,123 +1,119 @@
-
 const express = require('express');
 const path = require('path');
 const mysql = require('mysql');
 const bcrypt = require('bcrypt');
 
 const app = express();
-const PORT = 3306;
+const PORT = 3000;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 const db = mysql.createConnection({
   host: 'localhost',
+<<<<<<< HEAD
   user: '0023',
   password: 'gC6O$yzCeSSh',
   database: 'dosingenierias_0023',
+=======
+  user: 'dosingenierias',
+  password: 'C}FPy,3Xf]^4',
+  database: 'registro',
+>>>>>>> 51d0c0a5fcfcfc71234d8467704179a49c9019af
 });
 
 db.connect((err) => {
   if (err) {
-    console.error('Error de conexión a la base de datos:', err);
+    console.error('Database connection error:', err);
     throw err;
   }
-  console.log('Conectado a la base de datos MySQL');
+  console.log('Connected to MariaDB database');
 });
+
+// Create table if not exists for material quotes
 db.query(
-  'CREATE TABLE IF NOT EXISTS cotizacion_materiales (id INT AUTO_INCREMENT PRIMARY KEY, cantidad INT, dimensionx INT, dimensiony INT, dimensionz INT, dimension_total INT, material VARCHAR(255))',
+  'CREATE TABLE IF NOT EXISTS material_quotes (id INT AUTO_INCREMENT PRIMARY KEY, quantity INT, dimensionx INT, dimensiony INT, dimensionz INT, total_dimension INT, material VARCHAR(255))',
   (err) => {
     if (err) throw err;
-    console.log('Tabla de cotizaciones creada o ya existe');
+    console.log('Material quotes table created or already exists');
   }
 );
-app.get('/', (req, res) => {
-  res.sendFile(path.join(staticPath, 'columna.html'));
-});
-app.post('/columna', async (req, res) => {
-  try {
-    const { cantidad, dimensionx, dimensiony, dimensionz, dimension_total, material } = req.body;
 
-    await insertCotizacion(cantidad, dimensionx, dimensiony, dimensionz, dimension_total, material);
-
-    res.json({ message: 'Cotización guardada exitosamente' });
-  } catch (error) {
-    console.error('Error al guardar la cotización:', error);
-    res.status(500).json({ error: 'Error en el servidor' });
-  }
-});
-
-async function insertCotizacion(cantidad, dimensionx, dimensiony, dimensionz, dimension_total, material) {
-  return new Promise((resolve, reject) => {
-    db.query('INSERT INTO cotizacion_materiales (cantidad, dimensionx, dimensiony, dimensionz, dimension_total, material) VALUES (?, ?, ?, ?, ?, ?)',
-      [cantidad, dimensionx, dimensiony, dimensionz, dimension_total, material], (err) => {
-        if (err) return reject(err);
-        resolve();
-      });
-  });
-}
-
+// Create table if not exists for users
 db.query(
   'CREATE TABLE IF NOT EXISTS users (email VARCHAR(255) PRIMARY KEY, username VARCHAR(255) UNIQUE, password VARCHAR(255))',
   (err) => {
     if (err) throw err;
-    console.log('Tabla de usuarios creada o ya existe');
+    console.log('Users table created or already exists');
   }
 );
 
 const staticPath = path.join(__dirname, 'public');
 
-
-
+// Serve index.html
 app.get('/', (req, res) => {
   res.sendFile(path.join(staticPath, 'index.html'));
 });
 
-
-app.post('/crear', async (req, res) => {
+// Register new user
+app.post('/create', async (req, res) => {
   try {
     const { email, username, password } = req.body;
 
     if (!password) {
-      return res.json({ error: 'La contraseña no puede estar vacía' });
+      return res.json({ error: 'Password cannot be empty' });
     }
 
     const existingUser = await getUserByEmail(email);
 
     if (existingUser) {
-      return res.json({ error: 'Usuario ya registrado' });
+      return res.json({ error: 'User already registered' });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
     await insertUser(email, username, hashedPassword);
 
-    res.json({ message: 'Registro exitoso' });
+    res.json({ message: 'Registration successful' });
   } catch (error) {
-    console.error('Error en el registro:', error);
-    res.status(500).json({ error: 'Error en el servidor' });
+    console.error('Registration error:', error);
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
-
+// Login user
 app.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log('Credenciales recibidas:', email, password);
+    console.log('Credentials received:', email, password);
 
     const user = await getUserByEmail(email);
-    console.log('Usuario recuperado de la base de datos:', user);
+    console.log('User retrieved from database:', user);
 
     if (user && (await bcrypt.compare(password, user.password))) {
-      res.json({ message: 'Inicio de sesión exitoso' });
+      res.json({ message: 'Login successful' });
     } else {
-      console.log('Inicio de sesión incorrecto');
-      res.json({ error: 'Inicio de sesión incorrecto' });
+      console.log('Incorrect login');
+      res.json({ error: 'Incorrect login' });
     }
   } catch (error) {
-    console.error('Error en el inicio de sesión:', error);
-    res.status(500).json({ error: 'Error en el servidor' });
+    console.error('Login error:', error);
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
+// Save material quote
+app.post('/quote', async (req, res) => {
+  try {
+    const { quantity, dimensionx, dimensiony, dimensionz, total_dimension, material } = req.body;
 
+    await insertQuote(quantity, dimensionx, dimensiony, dimensionz, total_dimension, material);
+
+    res.json({ message: 'Quote saved successfully' });
+  } catch (error) {
+    console.error('Error saving quote:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Get user by email
 async function getUserByEmail(email) {
   return new Promise((resolve, reject) => {
     db.query('SELECT * FROM users WHERE email = ?', [email], (err, results) => {
@@ -127,6 +123,7 @@ async function getUserByEmail(email) {
   });
 }
 
+// Insert new user
 async function insertUser(email, username, password) {
   return new Promise((resolve, reject) => {
     db.query('INSERT INTO users (email, username, password) VALUES (?, ?, ?)', [email, username, password], (err) => {
@@ -136,6 +133,18 @@ async function insertUser(email, username, password) {
   });
 }
 
+// Insert new material quote
+async function insertQuote(quantity, dimensionx, dimensiony, dimensionz, total_dimension, material) {
+  return new Promise((resolve, reject) => {
+    db.query('INSERT INTO material_quotes (quantity, dimensionx, dimensiony, dimensionz, total_dimension, material) VALUES (?, ?, ?, ?, ?, ?)',
+      [quantity, dimensionx, dimensiony, dimensionz, total_dimension, material], (err) => {
+        if (err) return reject(err);
+        resolve();
+      });
+  });
+}
+
+// Start server
 app.listen(PORT, () => {
-  console.log(`El servidor está escuchando en el puerto ${PORT}`);
+  console.log(`Server is listening on port ${PORT}`);
 });
