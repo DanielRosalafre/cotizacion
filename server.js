@@ -16,7 +16,7 @@ const db = mysql.createConnection({
 =======
   user: 'dosingenierias',
   password: 'C}FPy,3Xf]^4',
-  database: 'registro',
+  database: 'dosingenierias_0023',
 >>>>>>> 51d0c0a5fcfcfc71234d8467704179a49c9019af
 });
 
