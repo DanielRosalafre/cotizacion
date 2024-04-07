@@ -4,7 +4,7 @@ const mysql = require('mysql');
 const bcrypt = require('bcrypt');
 
 const app = express();
-const PORT = 3000;
+const PORT = 3306;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 const db = mysql.createConnection({
